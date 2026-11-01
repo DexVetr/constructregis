@@ -1,6 +1,6 @@
 # Маршрут по факту — демо
 
-Открыть: https://dexvetr.github.io/route-fact-demo/
+Открыть: https://dexvetr.github.io/constructregis/
 
 Задания бригадам → ввод объёмов → проверка инженером → журнал КС-6а и экспорт Excel.
 
