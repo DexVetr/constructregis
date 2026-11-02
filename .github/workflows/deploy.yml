@@ -18,6 +18,21 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build REG.RU frontend
+        run: |
+          base64 --decode frontend-source.b64 > /tmp/frontend.zip
+          unzip -q /tmp/frontend.zip -d frontend
+          pnpm --dir frontend install --frozen-lockfile
+          pnpm --dir frontend test
+          pnpm --dir frontend build
+          mkdir -p public/release
+          cp -r frontend/docs/. public/release/
       - name: Create link to REG.RU site
         run: |
           mkdir -p public
