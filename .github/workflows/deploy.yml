@@ -1,4 +1,4 @@
-name: Build and deploy shared registry
+name: Deploy ConstructRegis link
 on:
   push:
     branches: [main]
@@ -18,20 +18,17 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: base64 --decode frontend-source.b64 > /tmp/frontend.zip
-      - run: unzip -q /tmp/frontend.zip -d frontend
-      - run: pnpm --dir frontend install --frozen-lockfile
-      - run: pnpm --dir frontend test
-      - run: pnpm --dir frontend build
+      - name: Create link to REG.RU site
+        run: |
+          mkdir -p public
+          cat > public/index.html <<'HTML'
+          <!doctype html>
+          <html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=https://constructregis.ru/"><title>ConstructRegis</title><link rel="canonical" href="https://constructregis.ru/"><body><h1>ConstructRegis</h1><p>Общий реестр переехал на новый адрес.</p><a href="https://constructregis.ru/">Открыть constructregis.ru</a><script>location.replace('https://constructregis.ru/');</script></body></html>
+          HTML
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: frontend/docs
-      - uses: actions/deploy-pages@v4
+          path: public
+      - name: Deploy
         id: deployment
+        uses: actions/deploy-pages@v4
